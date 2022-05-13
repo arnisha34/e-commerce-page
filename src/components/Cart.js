@@ -11,6 +11,7 @@ export default function Cart() {
   const removeItem = (id) => {
     const deleteItem = ctx.cart.filter(item => item.id !== id)
     ctx.setCart(deleteItem);
+    ctx.setQty(0)
   }
 
   return (
@@ -21,7 +22,7 @@ export default function Cart() {
         <>
         {ctx.cart.map(item => {
           return(
-            <div>
+            <div key={item.id}>
               <MiniCartThumbnail>
                 <img src={`./images/${ctx.current}-thumbnail.jpg`} className="left" alt='product'/>
               </MiniCartThumbnail>
@@ -29,7 +30,7 @@ export default function Cart() {
                 <span>{item.name}</span>
                 <span>{"$" + item.price} x {item.qty} <b>{"$" + totalPrice}</b></span>
               </div>
-              <img src="./images/icon-delete.svg" className='right' alt="delete" onClick={() => removeItem(item.id)}/>
+              <img src="./images/icon-delete.svg" className='delete right' alt="delete" onClick={() => removeItem(item.id)}/>
             </div>
           )
         })}
@@ -92,6 +93,7 @@ const CartItems = styled.div`
 
   .right{
     :hover{
+      filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(9%) hue-rotate(239deg) brightness(100%) contrast(100%);
       cursor: pointer;
     }
   }

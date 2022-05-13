@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import styled from 'styled-components'
 import { CartContext } from './CartContext'
 import { ImPlus } from 'react-icons/im'
@@ -8,29 +8,41 @@ export default function ProductInfo() {
 
   const ctx = useContext(CartContext)
 
-  let totalDiscount = ctx.price * (ctx.discount / 100);
-  let total = ctx.price - totalDiscount
-  ctx.setDiscount(ctx.discount)
-  ctx.setPrice(ctx.price)
-  ctx.setTotal(total)
+  const [productQty, setProductQty] = useState(0)
+
+  let price = ctx.data.map(item => item.price)
+  let subtotal = price * (50 / 100)
+  let total = price - subtotal
 
   const addQty = () => {
-    ctx.setQty(ctx.qty + 1)
+    setProductQty(productQty + 1)
   }
 
   const subQty = () => {
-    if(ctx.qty === 0){
+    if(productQty === 0){
       return 0;
     }
-    ctx.setQty(ctx.qty - 1)
+    setProductQty(productQty - 1)
+  }
+
+  const changeQty = (e) => {
+    ctx.setQty(e.target.value)
   }
 
   const addToCart = (id, qty, price, name) => {
     if(qty === 0){
       return false;
     }
-    ctx.setCart([{...ctx.data, id: id, qty: qty, price: price, name: name}])
-    ctx.setQty(0)
+
+    const inCart = ctx.cart.find(item => item.id === id)
+    if(inCart){
+      const updateCart = ctx.cart.map(item => item.id === id ? {id: id, qty: item.qty + qty, price: price, name: name} : item)
+      ctx.setCart(updateCart)
+    }else{
+      ctx.setCart([...ctx.cart, {id: id, qty: qty, price: price, name: name}])
+    }
+    ctx.setOpen(!ctx.open)
+    setProductQty(0)
   }
 
   return (
@@ -42,15 +54,15 @@ export default function ProductInfo() {
             <h1>{item.name}</h1>
             <p>{item.desc}</p>
             <PriceContainer>
-              <Price className="price">{"$" + ctx.total.toFixed(2)}</Price>
-              <Discount className='discount'>{ctx.discount + "%"}</Discount>
+              <Price className="price">{"$" + total}</Price>
+              <Discount className='discount'>{50 + "%"}</Discount>
             </PriceContainer>
             <OriginalPrice className='orig-price'>
-              {"$" + ctx.price.toFixed(2)}
+              {"$" + price}
             </OriginalPrice>
             <AddItemContainer>
-              <span><ImMinus size={12} onClick={subQty}/>{ctx.qty}<ImPlus size={12} onClick={addQty}/></span>
-              <button className='addToCart' onClick={() => addToCart(item.id, ctx.qty, ctx.total, item.name)}><img src="./images/icon-cart-white.svg" alt="cart icon"/>Add to cart</button>
+              <span><ImMinus size={12} onClick={() => subQty(item, productQty)}/><input name="qty" value={productQty} className="qty-box" onChange={(e) => changeQty(e)}/><ImPlus size={12} onClick={() => addQty(item, productQty)}/></span>
+              <button className='addToCart' onClick={() => addToCart(item.id, productQty, total, item.name)}><img src="./images/icon-cart-white.svg" alt="cart icon"/>Add to cart</button>
             </AddItemContainer>
           </div>
         )
@@ -78,6 +90,16 @@ const ProductInfoContainer = styled.div`
     color: var(--dark-grayish-blue);
     line-height: 2em;
   }
+
+  @media screen and (max-width: 1024px){
+    width: 100%;
+  }
+
+  @media screen and (max-width: 768px){
+    h1{
+      font-size: 2em;
+    }
+  }
 `
 
 const PriceContainer = styled.div`
@@ -85,6 +107,10 @@ const PriceContainer = styled.div`
   align-items: center;
   gap: 20px;
   font-weight: 700;
+
+  @media screen and (max-width: 1024px){
+    float: left;
+  }
 `
 const Price = styled.div`
   font-size: 2em;
@@ -102,13 +128,18 @@ const OriginalPrice = styled.div`
   letter-spacing: 1px;
   margin-top: 10px;
   text-decoration: line-through;
+
+  @media screen and (max-width: 1024px){
+    float: right;
+  }
 `
 const AddItemContainer = styled.div`
   display: flex;
-  justify-content: space-between;
   gap: 20px;
+  justify-content: space-between;
   font-weight: 700;
   margin-top: 40px;
+  clear: both;
 
   span{
     background-color: var(--light-grayish-blue);
@@ -124,6 +155,19 @@ const AddItemContainer = styled.div`
       :hover{
         cursor: pointer;
       }
+    }
+  }
+
+  input{
+    background: transparent;
+    border: none;
+    font-size: 1.05em;
+    font-weight: 700;
+    text-align: center;
+    width: 50%;
+
+    :focus{
+      outline: none;
     }
   }
 
@@ -147,6 +191,19 @@ const AddItemContainer = styled.div`
 
     :hover{
       cursor: pointer;
+    }
+  }
+
+  @media screen and (max-width: 1024px){
+    padding-top: 30px;
+  }
+
+  @media screen and (max-width: 576px){
+    flex-wrap: wrap;
+
+    button,
+    span{
+      width: 100%;
     }
   }
 `

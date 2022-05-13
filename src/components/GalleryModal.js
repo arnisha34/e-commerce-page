@@ -15,11 +15,11 @@ export default function GalleryModal() {
       <MainGalleryImage>
         <img src={`./images/${ctx.current}.jpg`} alt='product'/>
       </MainGalleryImage>
-      <GalleryThumbnails>       
-        <img className={`${ctx.current === "image-product-1.jpg"&&"active"}`} src='./images/image-product-1-thumbnail.jpg' alt='product thumbnail 1' onClick={() => galleryClick(ctx.setCurrent("image-product-1.jpg"))}/>
-        <img className={`${ctx.current === "image-product-2.jpg"&&"active"}`} src='./images/image-product-2-thumbnail.jpg' alt='product thumbnail 2' onClick={() => galleryClick(ctx.setCurrent("image-product-2.jpg"))}/>
-        <img className={`${ctx.current === "image-product-3.jpg"&&"active"}`} src='./images/image-product-3-thumbnail.jpg' alt='product thumbnail 3' onClick={() => galleryClick(ctx.setCurrent("image-product-3.jpg"))}/>
-        <img className={`${ctx.current === "image-product-4.jpg"&&"active"}`} src='./images/image-product-4-thumbnail.jpg' alt='product thumbnail 4' onClick={() => galleryClick(ctx.setCurrent("image-product-4.jpg"))}/>
+      <GalleryThumbnails>   
+        <img className={`${ctx.current === "image-product-1"&&"active"}`} src='./images/image-product-1-thumbnail.jpg' alt='product thumbnail 1' onClick={() => galleryClick(ctx.setCurrent("image-product-1"))}/>
+        <img className={`${ctx.current === "image-product-2"&&"active"}`} src='./images/image-product-2-thumbnail.jpg' alt='product thumbnail 2' onClick={() => galleryClick(ctx.setCurrent("image-product-2"))}/>
+        <img className={`${ctx.current === "image-product-3"&&"active"}`} src='./images/image-product-3-thumbnail.jpg' alt='product thumbnail 3' onClick={() => galleryClick(ctx.setCurrent("image-product-3"))}/>
+        <img className={`${ctx.current === "image-product-4"&&"active"}`} src='./images/image-product-4-thumbnail.jpg' alt='product thumbnail 4' onClick={() => galleryClick(ctx.setCurrent("image-product-4"))}/>
       </GalleryThumbnails>
     </GalleryModalContainer>
   )
@@ -27,6 +27,10 @@ export default function GalleryModal() {
 
 const GalleryModalContainer = styled.div`
   width: 55%;
+
+  @media screen and (max-width: 1024px){
+    width: 100%;
+  }
 `
 
 const MainGalleryImage = styled.div`
@@ -37,6 +41,12 @@ const MainGalleryImage = styled.div`
 
     :hover{
       cursor: pointer;
+    }
+  }
+
+  @media screen and (max-width: 1024px){
+    img{
+      width: 100%;
     }
   }
 `
@@ -63,5 +73,8 @@ const GalleryThumbnails = styled.div`
         height: 100%;
       }
     }
+  }
+  @media screen and (max-width: 1024px){
+      display: none;
   }
 `
